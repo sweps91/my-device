@@ -1,4 +1,4 @@
-use sysinfo::{Components, Disks, Networks, System};
+use sysinfo::{Disks, Networks, System};
 
 fn b_to_gb(bytes: u64) -> String {
     format!("{:.2} GB", bytes as f32 / 1024.0 / 1024.0 / 1024.0)
@@ -20,10 +20,7 @@ fn main() {
     println!("System kernel version:   {:?}", System::kernel_version());
     println!("System OS version:       {:?}", System::os_version());
     println!("System host name:        {:?}", System::host_name());
-    println!(
-        "from last start:         {} minutes",
-        (System::uptime() % 3600) / 60
-    );
+    println!("from last start:         {} minutes", System::uptime() / 60);
 
     // RAM and swap information:
     println!("\nRAM:");
@@ -40,23 +37,32 @@ fn main() {
     }
     println!("number of CPUs: {}", sys.cpus().len());
 
-    // // We display all disks' information:
-    // println!("=> disks:");
-    // let disks = Disks::new_with_refreshed_list();
-    // for disk in &disks {
-    //     println!("{disk:?}");
-    // }
+    println!("\nDISKS:");
+    let disks: Disks = Disks::new_with_refreshed_list();
+    for disk in &disks {
+        println!(
+            "{:?} - total: {} GB, free: {} GB",
+            disk.name(),
+            disk.total_space() / 1_073_741_824,
+            disk.available_space() / 1_073_741_824,
+        );
+    }
 
-    // // Network interfaces name, total data received and total data transmitted:
-    // let networks = Networks::new_with_refreshed_list();
-    // println!("=> networks:");
-    // for (interface_name, data) in &networks {
-    //     println!(
-    //         "{interface_name}: {} B (down) / {} B (up)",
-    //         data.total_received(),
-    //         data.total_transmitted(),
-    //     );
-    //     // If you want the amount of data received/transmitted since last call
-    //     // to `Networks::refresh`, use `received`/`transmitted`.
-    // }
+    println!("\nNETWORK:");
+    let networks = Networks::new_with_refreshed_list();
+    for (name, data) in &networks {
+        println!(
+            "{}: ↓{} KB  ↑{} KB",
+            name,
+            data.received() / 1024,
+            data.transmitted() / 1024,
+        );
+    }
+
+    println!("\nTOP 10 PROCESSES (RAM):");
+    let mut processes: Vec<_> = sys.processes().values().collect();
+    processes.sort_by(|a, b| b.memory().cmp(&a.memory()));
+    for p in processes.iter().take(10) {
+        println!("{:?}: {} MB", p.name(), p.memory() / 1_048_576);
+    }
 }
