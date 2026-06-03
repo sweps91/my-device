@@ -1,7 +1,7 @@
 mod report;
 mod save;
 
-const PRINT_REPORT: bool = false;
+const PRINT_REPORT: bool = true;
 const SAVE_REPORT: bool = false;
 
 /// main run

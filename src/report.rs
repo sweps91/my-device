@@ -1,89 +1,50 @@
+use chrono::Local;
 use std::thread;
 use sysinfo::{Disks, MINIMUM_CPU_UPDATE_INTERVAL, Networks, System};
 
 /// create monitoring report
-/// TODO
+/// TODO DOCSTRING
 pub fn create_report() -> String {
     let mut sys: System = System::new_all();
 
     // Update all information
     sys.refresh_all();
 
-    println!("MY DEVICE:\n");
+    // Create report mut variable for final reporting
+    let mut report: String = format!(
+        "MY DEVICE: {}\n{}\n",
+        extract_string("host_name", || System::host_name()),
+        Local::now().format("%Y-%m-%d %H:%M:%S")
+    );
 
-    // Display system information:
-    println!("SYSTEM:");
-    println!("System host name:        {:?}", System::host_name());
-    println!("System name:             {:?}", System::name());
-    println!("System OS version:       {:?}", System::os_version());
-    println!("System OS long version:  {:?}", System::long_os_version());
-    println!("System kernel version:   {:?}", System::kernel_version());
-    println!("System uptime (hours)    {:?}", System::uptime() / 3_600);
+    // SYSTEM
+    report += &report_system();
 
-    // Number of CPUs:
-    println!("\nCPU:");
-    if let Some(cpu) = sys.cpus().first() {
-        println!("brand:          {}", cpu.brand());
-        println!("vendor_id:      {}", cpu.vendor_id());
-    }
-    println!("number of CPUs: {}", sys.cpus().len());
-    println!("{}", cpu_usage(&mut sys));
+    // CPU
+    report += &report_cpu(&mut sys);
 
-    // RAM and swap information:
-    println!("\nRAM:");
-    println!("total memory: {}", b_to_gb(sys.total_memory()));
-    println!("used memory : {}", b_to_gb(sys.used_memory()));
-    println!("total swap  : {}", b_to_gb(sys.total_swap()));
-    println!("used swap   : {}", b_to_gb(sys.used_swap()));
+    // RAM
+    report += &report_ram(&mut sys);
 
-    println!("\nDISKS:");
-    let disks: Disks = Disks::new_with_refreshed_list();
-    for disk in &disks {
-        println!(
-            "{:?} - total: {} GB, free: {} GB, removable: {}, file system: {:?}, mounted on: {:?}",
-            disk.name(),
-            b_to_gb(disk.total_space()),
-            b_to_gb(disk.available_space()),
-            disk.is_removable(),
-            disk.file_system(),
-            disk.mount_point()
-        );
-    }
+    // DISKS
+    report += &report_disks();
 
-    println!("\nNETWORK:");
-    let networks = Networks::new_with_refreshed_list();
-    for (name, data) in &networks {
-        println!(
-            "{}: downloading: {:.2} MB, uploading: {:.2} MB",
-            name,
-            data.received() / 1024 / 1024,
-            data.transmitted() / 1024 / 1024,
-        );
-    }
+    // NETWORK
+    report += &report_network();
 
-    println!("\nPROCESSES:");
-    println!("Number of processes: {:?}", sys.processes().len());
+    // PROCESSES
+    report += &format!(
+        "\nPROCESSES:\nNumber of processes: {:?}\n",
+        sys.processes().len()
+    );
 
-    println!("\nTOP 10 RAM PROCESSES:");
-    let mut processes: Vec<_> = sys.processes().values().collect();
-    processes.sort_by_key(|b| std::cmp::Reverse(b.memory()));
-    for p in processes.iter().take(10) {
-        println!("{:?}: {} MB", p.name(), p.memory() / 1_048_576);
-    }
+    // TOP RAM PROCESSES
+    report += &report_top_ram_processes(&mut sys, 10);
 
-    println!("\nTOP 10 CPU PROCESSES:");
-    let mut processes: Vec<_> = sys.processes().values().collect();
-    processes.sort_by(|a, b| {
-        b.cpu_usage()
-            .partial_cmp(&a.cpu_usage())
-            .unwrap_or(std::cmp::Ordering::Equal)
-    });
+    // TOP CPU PROCESSES
+    report += &report_top_cpu_processes(&mut sys, 10);
 
-    for p in processes.iter().take(10) {
-        println!("{:?}: {:.1}%", p.name(), p.cpu_usage());
-    }
-
-    "ok".to_string()
+    report
 }
 
 fn b_to_gb(bytes: u64) -> String {
@@ -108,4 +69,120 @@ fn cpu_usage(sys: &mut System) -> String {
     }
 
     cpu_usage + &cpu_unit_usage
+}
+
+fn extract_string<F>(looking_for: &str, f: F) -> String
+where
+    F: Fn() -> Option<String>,
+{
+    f().unwrap_or_else(|| format!("{} not found", looking_for))
+}
+
+fn report_system() -> String {
+    format!(
+        "\nSYSTEM:\n\
+         name:              {}\n\
+         os version:        {}\n\
+         os long version:   {}\n\
+         kernel version:    {}\n\
+         uptime (hours):    {}\n",
+        extract_string("name", || System::name()),
+        extract_string("os version", || System::os_version()),
+        extract_string("os long version", || System::long_os_version()),
+        extract_string("kernel version", || System::kernel_version()),
+        System::uptime() / 3_600,
+    )
+}
+
+fn report_cpu(sys: &mut System) -> String {
+    let cpu_info = if let Some(cpu) = sys.cpus().first() {
+        format!(
+            "brand:          {}\n\
+             vendor_id:      {}\n",
+            cpu.brand(),
+            cpu.vendor_id(),
+        )
+    } else {
+        "brand:          not found\n\
+         vendor_id:      not found\n"
+            .to_string()
+    };
+
+    format!(
+        "\nCPU:\n\
+         {}number of CPUs: {}\n\
+         {}\n",
+        cpu_info,
+        sys.cpus().len(),
+        cpu_usage(sys),
+    )
+}
+
+fn report_ram(sys: &mut System) -> String {
+    format!(
+        "\nRAM:\n\
+         total memory: {}\n\
+         used memory:  {}\n\
+         total swap:   {}\n\
+         used swap:    {}\n",
+        b_to_gb(sys.total_memory()),
+        b_to_gb(sys.used_memory()),
+        b_to_gb(sys.total_swap()),
+        b_to_gb(sys.used_swap()),
+    )
+}
+
+fn report_disks() -> String {
+    let mut report: String = format!("\nDISKS:\n");
+    let disks: Disks = Disks::new_with_refreshed_list();
+    for disk in &disks {
+        report += &format!(
+            "{:?} - total: {}, free: {}, removable: {}, file system: {:?}, mounted on: {:?}\n",
+            disk.name(),
+            b_to_gb(disk.total_space()),
+            b_to_gb(disk.available_space()),
+            disk.is_removable(),
+            disk.file_system(),
+            disk.mount_point()
+        );
+    }
+    report
+}
+
+fn report_network() -> String {
+    let mut report = format!("\nNETWORK:\n");
+    let networks = Networks::new_with_refreshed_list();
+    for (name, data) in &networks {
+        report += &format!(
+            "{}: downloading: {:.2} MB, uploading: {:.2} MB\n",
+            name,
+            data.received() / 1024 / 1024,
+            data.transmitted() / 1024 / 1024,
+        );
+    }
+    report
+}
+
+fn report_top_ram_processes(sys: &mut System, top_num: usize) -> String {
+    let mut report = format!("\nTOP {} RAM PROCESSES:\n", top_num);
+    let mut processes: Vec<_> = sys.processes().values().collect();
+    processes.sort_by_key(|b| std::cmp::Reverse(b.memory()));
+    for p in processes.iter().take(top_num) {
+        report += &format!("{:?}: {} MB\n", p.name(), p.memory() / 1_048_576);
+    }
+    report
+}
+
+fn report_top_cpu_processes(sys: &mut System, top_num: usize) -> String {
+    let mut report = format!("\nTOP {} CPU PROCESSES:\n", top_num);
+    let mut processes: Vec<_> = sys.processes().values().collect();
+    processes.sort_by(|a, b| {
+        b.cpu_usage()
+            .partial_cmp(&a.cpu_usage())
+            .unwrap_or(std::cmp::Ordering::Equal)
+    });
+    for p in processes.iter().take(top_num) {
+        report += &format!("{:?}: {:.1}%\n", p.name(), p.cpu_usage());
+    }
+    report
 }

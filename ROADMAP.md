@@ -2,12 +2,12 @@
 
 ## ASAP
 
-1) ADD TIMESTAMP
-2) REPAIR CPU PROCESSES - must be similar like fn cpu_usage
-3) ADD WRITING DATA TO TXT
-4) ADD TESTS
+- REPAIR CPU PROCESSES - must be similar like fn cpu_usage
+- ADD WRITING DATA TO TXT
+- ADD TESTS
 
 - add temperature of components
+- add pct of used RAM and pct of free disk
 - create functions docstring
 - create readme
 - add LICENSE
