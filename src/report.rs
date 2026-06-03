@@ -3,7 +3,7 @@ use sysinfo::{Disks, MINIMUM_CPU_UPDATE_INTERVAL, Networks, System};
 
 /// create monitoring report
 /// TODO
-pub fn create_report() {
+pub fn create_report() -> String {
     let mut sys: System = System::new_all();
 
     // Update all information
@@ -82,6 +82,8 @@ pub fn create_report() {
     for p in processes.iter().take(10) {
         println!("{:?}: {:.1}%", p.name(), p.cpu_usage());
     }
+
+    "ok".to_string()
 }
 
 fn b_to_gb(bytes: u64) -> String {
