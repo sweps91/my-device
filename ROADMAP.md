@@ -10,6 +10,8 @@
 - add temperature of components
 - create functions docstring
 - create readme
+- add LICENSE
+- handle runtime error, when binary runs on incompatible device
 
 ## REFACTOR
 
