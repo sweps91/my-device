@@ -7,6 +7,7 @@
 3) ADD WRITING DATA TO TXT
 4) ADD TESTS
 
+- create functions docstring
 - create readme
 
 ## REFACTOR
