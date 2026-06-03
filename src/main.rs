@@ -2,7 +2,7 @@ mod report;
 mod save;
 
 const PRINT_REPORT: bool = true;
-const SAVE_REPORT: bool = false;
+const SAVE_REPORT: bool = false; // not prepared yet
 
 /// main run
 fn main() {
