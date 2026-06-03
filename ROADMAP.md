@@ -13,6 +13,10 @@
 - add LICENSE
 - handle runtime error, when binary runs on incompatible device
 
+- add timezone to timestamp (head of report)
+- clippy warnings
+- use logging or prints?
+
 ## REFACTOR
 
 ## OPTIMIZATION

@@ -1,6 +1,6 @@
 use chrono::Local;
 use std::thread;
-use sysinfo::{Disks, MINIMUM_CPU_UPDATE_INTERVAL, Networks, System};
+use sysinfo::{Disks, MINIMUM_CPU_UPDATE_INTERVAL, Networks, ProcessesToUpdate, System};
 
 /// create monitoring report
 /// TODO DOCSTRING
@@ -9,6 +9,7 @@ pub fn create_report() -> String {
 
     // Update all information
     sys.refresh_all();
+    sys.refresh_processes(ProcessesToUpdate::All, true);
 
     // Create report mut variable for final reporting
     let mut report: String = format!(
@@ -20,7 +21,10 @@ pub fn create_report() -> String {
     // SYSTEM
     report += &report_system();
 
-    // CPU
+    // CPU (with required refreshes for time delta comparison)
+    thread::sleep(MINIMUM_CPU_UPDATE_INTERVAL);
+    sys.refresh_cpu_all();
+    sys.refresh_processes(ProcessesToUpdate::All, true);
     report += &report_cpu(&mut sys);
 
     // RAM
@@ -52,12 +56,6 @@ fn b_to_gb(bytes: u64) -> String {
 }
 
 fn cpu_usage(sys: &mut System) -> String {
-    sys.refresh_cpu_all();
-
-    thread::sleep(MINIMUM_CPU_UPDATE_INTERVAL);
-
-    sys.refresh_cpu_all();
-
     let cpu_usage = format!(
         "cpu usage: {:.1}% (bellow per unit)",
         sys.global_cpu_usage()
@@ -157,7 +155,7 @@ fn report_network() -> String {
             "{}: downloading: {:.2} MB, uploading: {:.2} MB\n",
             name,
             data.received() / 1024 / 1024,
-            data.transmitted() / 1024 / 1024,
+            data.transmitted() / 1024 / 1024
         );
     }
     report
@@ -182,7 +180,7 @@ fn report_top_cpu_processes(sys: &mut System, top_num: usize) -> String {
             .unwrap_or(std::cmp::Ordering::Equal)
     });
     for p in processes.iter().take(top_num) {
-        report += &format!("{:?}: {:.1}%\n", p.name(), p.cpu_usage());
+        report += &format!("{:?}: {:.2}%\n", p.name(), p.cpu_usage());
     }
     report
 }
