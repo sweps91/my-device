@@ -1,12 +1,6 @@
 use std::thread;
 use sysinfo::{Disks, MINIMUM_CPU_UPDATE_INTERVAL, Networks, System};
 
-// TASKS:
-// 1) ADD TIMESTAMP
-// 2) REPAIR CPU PROCESSES - must be similar like fn cpu_usage
-// 3) ADD WRITING DATA TO TXT
-// 4) ADD TESTS
-
 fn main() {
     // Please note that we use "new_all" to ensure that all lists of
     // CPUs and processes are filled!
