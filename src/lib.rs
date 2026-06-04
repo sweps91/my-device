@@ -1,6 +1,6 @@
 // #![warn(missing_docs)]
 
-mod report;
+pub mod report;
 pub mod save;
 
 const PRINT_REPORT: bool = true;

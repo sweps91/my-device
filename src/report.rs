@@ -2,8 +2,12 @@ use chrono::Local;
 use std::thread;
 use sysinfo::{Disks, MINIMUM_CPU_UPDATE_INTERVAL, Networks, ProcessesToUpdate, System};
 
-/// create monitoring report
-/// TODO DOCSTRING
+/// Create string with device monitoring data.
+///
+/// # Examples
+/// ```rust
+/// my_device::report::create_report();
+/// ```
 pub fn create_report() -> String {
     let mut sys: System = System::new_all();
 
