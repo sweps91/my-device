@@ -55,6 +55,7 @@ pub fn create_report() -> String {
     report
 }
 
+/// Transfer number from bytes and return as string in gigabytes.
 fn b_to_gb(bytes: u64) -> String {
     format!("{:.2} GB", bytes as f32 / 1024.0 / 1024.0 / 1024.0) // or num / 1_073_741_824
 }
@@ -187,4 +188,17 @@ fn report_top_cpu_processes(sys: &mut System, top_num: usize) -> String {
         report += &format!("{:?}: {:.2}%\n", p.name(), p.cpu_usage());
     }
     report
+}
+
+// TESTS:
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_b_to_gb() {
+        let result = b_to_gb(16_782_584_709);
+        assert_eq!(result, "15.63 GB");
+    }
 }
