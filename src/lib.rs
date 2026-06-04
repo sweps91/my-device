@@ -1,12 +1,17 @@
 // #![warn(missing_docs)]
 
-pub mod save;
-
 mod report;
+pub mod save;
 
 const PRINT_REPORT: bool = true;
 const SAVE_REPORT: bool = true;
 
+/// Orchestrate report creation & its printing or/and saving if allowed.
+///
+/// # Examples
+/// ```rust
+/// my_device::run();
+/// ```
 pub fn run() {
     let rep: String = report::create_report();
 
