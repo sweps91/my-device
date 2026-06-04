@@ -1,5 +1,5 @@
 mod report;
-mod save;
+use my_device::save;
 
 const PRINT_REPORT: bool = true;
 const SAVE_REPORT: bool = true;
