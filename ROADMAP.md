@@ -2,7 +2,6 @@
 
 ## ASAP
 
-- create functions docstring
 - clippy warnings
 - add tests
 

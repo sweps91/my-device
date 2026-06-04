@@ -47,7 +47,7 @@ pub fn create_report() -> String {
     );
 
     // TOP RAM PROCESSES
-    report += &report_top_ram_processes(&mut sys, 10);
+    report += &report_top_ram_processes(&mut sys, 20);
 
     // TOP CPU PROCESSES
     report += &report_top_cpu_processes(&mut sys, 10);
@@ -60,6 +60,7 @@ fn b_to_gb(bytes: u64) -> String {
     format!("{:.2} GB", bytes as f32 / 1024.0 / 1024.0 / 1024.0) // or num / 1_073_741_824
 }
 
+/// Get cpu usage.
 fn cpu_usage(sys: &mut System) -> String {
     let cpu_usage = format!(
         "cpu usage: {:.1}% (bellow per unit)",
@@ -74,6 +75,7 @@ fn cpu_usage(sys: &mut System) -> String {
     cpu_usage + &cpu_unit_usage
 }
 
+/// Extract string or return not found.
 fn extract_string<F>(looking_for: &str, f: F) -> String
 where
     F: Fn() -> Option<String>,
@@ -81,6 +83,7 @@ where
     f().unwrap_or_else(|| format!("{} not found", looking_for))
 }
 
+/// Get data about system.
 fn report_system() -> String {
     format!(
         "\nSYSTEM:\n\
@@ -97,6 +100,7 @@ fn report_system() -> String {
     )
 }
 
+/// Get CPU monitoring data.
 fn report_cpu(sys: &mut System) -> String {
     let cpu_info = if let Some(cpu) = sys.cpus().first() {
         format!(
@@ -121,6 +125,7 @@ fn report_cpu(sys: &mut System) -> String {
     )
 }
 
+/// Get RAM monitoring data.
 fn report_ram(sys: &mut System) -> String {
     format!(
         "\nRAM:\n\
@@ -135,6 +140,7 @@ fn report_ram(sys: &mut System) -> String {
     )
 }
 
+/// Get data about device disks.
 fn report_disks() -> String {
     let mut report: String = format!("\nDISKS:\n");
     let disks: Disks = Disks::new_with_refreshed_list();
@@ -152,6 +158,7 @@ fn report_disks() -> String {
     report
 }
 
+/// Get data about connected network.
 fn report_network() -> String {
     let mut report = format!("\nNETWORK:\n");
     let networks = Networks::new_with_refreshed_list();
@@ -166,6 +173,7 @@ fn report_network() -> String {
     report
 }
 
+/// Get top RAM consuming processes.
 fn report_top_ram_processes(sys: &mut System, top_num: usize) -> String {
     let mut report = format!("\nTOP {} RAM PROCESSES:\n", top_num);
     let mut processes: Vec<_> = sys.processes().values().collect();
@@ -176,6 +184,7 @@ fn report_top_ram_processes(sys: &mut System, top_num: usize) -> String {
     report
 }
 
+/// Get top CPU consuming processes.
 fn report_top_cpu_processes(sys: &mut System, top_num: usize) -> String {
     let mut report = format!("\nTOP {} CPU PROCESSES:\n", top_num);
     let mut processes: Vec<_> = sys.processes().values().collect();
