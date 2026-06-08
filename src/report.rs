@@ -1,5 +1,7 @@
 use std::thread;
-use sysinfo::{Disks, MINIMUM_CPU_UPDATE_INTERVAL, Networks, ProcessesToUpdate, System};
+use sysinfo::{
+    Components, Disks, MINIMUM_CPU_UPDATE_INTERVAL, Networks, ProcessesToUpdate, System,
+};
 
 /// Create string with device monitoring data.
 ///
@@ -47,6 +49,9 @@ pub fn create_report(day: &String, time: &String) -> (String, String) {
 
     // TOP CPU PROCESSES
     report += &report_top_cpu_processes(&mut sys, 10);
+
+    // COMPONENTS
+    report += &report_components();
 
     (host_name, report)
 }
@@ -191,6 +196,17 @@ fn report_top_cpu_processes(sys: &mut System, top_num: usize) -> String {
     });
     for p in processes.iter().take(top_num) {
         report += &format!("{:?}: {:.2}%\n", p.name(), p.cpu_usage());
+    }
+    report
+}
+
+/// Get components temperature
+fn report_components() -> String {
+    let components = Components::new_with_refreshed_list();
+
+    let mut report = format!("\nCOMPONENTS:\n(need permission: run as administrator)\n");
+    for component in &components {
+        report += &format!("{component:?}");
     }
     report
 }

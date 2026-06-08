@@ -2,8 +2,6 @@
 
 ## ASAP
 
-- add temperature of components
-
 - clippy warnings
 - add tests
 
