@@ -165,10 +165,10 @@ fn report_network() -> String {
     let networks = Networks::new_with_refreshed_list();
     for (name, data) in &networks {
         report += &format!(
-            "{}: downloading: {:.2} MB, uploading: {:.2} MB\n",
+            "{}: downloading: {} KB, uploading: {} KB\n",
             name,
-            data.received() / 1024 / 1024,
-            data.transmitted() / 1024 / 1024
+            data.received() / 1024,
+            data.transmitted() / 1024
         );
     }
     report
