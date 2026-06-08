@@ -5,7 +5,7 @@ use sysinfo::{Disks, MINIMUM_CPU_UPDATE_INTERVAL, Networks, ProcessesToUpdate, S
 ///
 /// # Examples
 /// ```rust
-/// my_device::report::create_report();
+/// my_device::report::create_report(&"2026-06-01".to_string(), &"11h-11m-11s".to_string());
 /// ```
 pub fn create_report(day: &String, time: &String) -> (String, String) {
     let mut sys: System = System::new_all();
