@@ -81,7 +81,7 @@ fn extract_string<F>(looking_for: &str, f: F) -> String
 where
     F: Fn() -> Option<String>,
 {
-    f().unwrap_or_else(|| format!("{} not_found", looking_for))
+    f().unwrap_or_else(|| format!("{}_not_found", looking_for))
 }
 
 /// Get data about system.
@@ -94,9 +94,9 @@ fn report_system() -> String {
          kernel version:    {}\n\
          uptime (hours):    {}\n",
         extract_string("name", || System::name()),
-        extract_string("os version", || System::os_version()),
-        extract_string("os long version", || System::long_os_version()),
-        extract_string("kernel version", || System::kernel_version()),
+        extract_string("os_version", || System::os_version()),
+        extract_string("os_long_version", || System::long_os_version()),
+        extract_string("kernel_version", || System::kernel_version()),
         System::uptime() / 3_600,
     )
 }
