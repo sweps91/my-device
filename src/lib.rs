@@ -17,13 +17,17 @@ pub fn run() {
     let day: String = format!("{}", Local::now().format("%Y-%m-%d"));
     let time: String = format!("{}", Local::now().format("%Hh-%Mm-%Ss"));
 
-    let rep: String = report::create_report(&day, &time);
+    let (host_name, rep) = report::create_report(&day, &time);
 
     if PRINT_REPORT {
         println!("{}", rep)
     }
 
     if SAVE_REPORT {
-        save::save_report("my-device-report".to_string(), "report".to_string(), rep);
+        save::save_report(
+            "my-device-report".to_string(),
+            format!("{}-{}-{}", host_name, day, time),
+            rep,
+        );
     }
 }

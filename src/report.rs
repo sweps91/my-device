@@ -7,7 +7,7 @@ use sysinfo::{Disks, MINIMUM_CPU_UPDATE_INTERVAL, Networks, ProcessesToUpdate, S
 /// ```rust
 /// my_device::report::create_report();
 /// ```
-pub fn create_report(day: &String, time: &String) -> String {
+pub fn create_report(day: &String, time: &String) -> (String, String) {
     let mut sys: System = System::new_all();
 
     // Update all information
@@ -15,12 +15,8 @@ pub fn create_report(day: &String, time: &String) -> String {
     sys.refresh_processes(ProcessesToUpdate::All, true);
 
     // Create report mut variable for final reporting
-    let mut report: String = format!(
-        "MY DEVICE: {}\nday: {}\ntime: {}\n",
-        extract_string("host_name", || System::host_name()),
-        day,
-        time
-    );
+    let host_name: String = extract_string("host_name", || System::host_name());
+    let mut report: String = format!("MY DEVICE: {}\nday: {}\ntime: {}\n", host_name, day, time);
 
     // SYSTEM
     report += &report_system();
@@ -52,7 +48,7 @@ pub fn create_report(day: &String, time: &String) -> String {
     // TOP CPU PROCESSES
     report += &report_top_cpu_processes(&mut sys, 10);
 
-    report
+    (host_name, report)
 }
 
 /// Transfer number from bytes and return as string in gigabytes.

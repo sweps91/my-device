@@ -2,11 +2,11 @@
 
 ## ASAP
 
+- add temperature of components
+
 - clippy warnings
 - add tests
 
-- add dynamic naming of saved file according timestamp
-- add temperature of components
 - add pct of used RAM and pct of free disk
 - create readme
 - add LICENSE
