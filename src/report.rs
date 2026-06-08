@@ -1,4 +1,3 @@
-use chrono::Local;
 use std::thread;
 use sysinfo::{Disks, MINIMUM_CPU_UPDATE_INTERVAL, Networks, ProcessesToUpdate, System};
 
@@ -8,7 +7,7 @@ use sysinfo::{Disks, MINIMUM_CPU_UPDATE_INTERVAL, Networks, ProcessesToUpdate, S
 /// ```rust
 /// my_device::report::create_report();
 /// ```
-pub fn create_report() -> String {
+pub fn create_report(day: &String, time: &String) -> String {
     let mut sys: System = System::new_all();
 
     // Update all information
@@ -17,9 +16,10 @@ pub fn create_report() -> String {
 
     // Create report mut variable for final reporting
     let mut report: String = format!(
-        "MY DEVICE: {}\n{}\n",
+        "MY DEVICE: {}\nday: {}\ntime: {}\n",
         extract_string("host_name", || System::host_name()),
-        Local::now().format("%Y-%m-%d %H:%M:%S")
+        day,
+        time
     );
 
     // SYSTEM
@@ -75,12 +75,12 @@ fn cpu_usage(sys: &mut System) -> String {
     cpu_usage + &cpu_unit_usage
 }
 
-/// Extract string or return not found.
+/// Extract string or return not_found.
 fn extract_string<F>(looking_for: &str, f: F) -> String
 where
     F: Fn() -> Option<String>,
 {
-    f().unwrap_or_else(|| format!("{} not found", looking_for))
+    f().unwrap_or_else(|| format!("{} not_found", looking_for))
 }
 
 /// Get data about system.

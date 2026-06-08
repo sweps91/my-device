@@ -2,6 +2,7 @@
 
 pub mod report;
 pub mod save;
+use chrono::Local;
 
 const PRINT_REPORT: bool = true;
 const SAVE_REPORT: bool = true;
@@ -13,7 +14,10 @@ const SAVE_REPORT: bool = true;
 /// my_device::run();
 /// ```
 pub fn run() {
-    let rep: String = report::create_report();
+    let day: String = format!("{}", Local::now().format("%Y-%m-%d"));
+    let time: String = format!("{}", Local::now().format("%Hh-%Mm-%Ss"));
+
+    let rep: String = report::create_report(&day, &time);
 
     if PRINT_REPORT {
         println!("{}", rep)
