@@ -147,13 +147,14 @@ fn report_disks() -> String {
     let disks: Disks = Disks::new_with_refreshed_list();
     for disk in &disks {
         report += &format!(
-            "{:?} - total: {}, free: {}, removable: {}, file system: {:?}, mounted on: {:?}\n",
+            "{}: {:?} - total: {}, free: {}, removable: {}, file sys: {:?}, mounted: {:?}\n",
+            disk.kind(),
             disk.name(),
             b_to_gb(disk.total_space()),
             b_to_gb(disk.available_space()),
             disk.is_removable(),
             disk.file_system(),
-            disk.mount_point()
+            disk.mount_point(),
         );
     }
     report
