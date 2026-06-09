@@ -61,6 +61,10 @@ fn b_to_gb(bytes: u64) -> String {
     format!("{:.2} GB", bytes as f32 / 1024.0 / 1024.0 / 1024.0) // or num / 1_073_741_824
 }
 
+fn count_percent(full_number: u64, count_number: u64) -> String {
+    format!("{} %", count_number / (full_number / 100))
+}
+
 /// Get cpu usage.
 fn cpu_usage(sys: &mut System) -> String {
     let cpu_usage = format!(
@@ -128,14 +132,18 @@ fn report_cpu(sys: &mut System) -> String {
 
 /// Get RAM monitoring data.
 fn report_ram(sys: &mut System) -> String {
+    let total_memory: u64 = sys.total_memory();
+    let used_memory: u64 = sys.used_memory();
+
     format!(
         "\nRAM:\n\
          total memory: {}\n\
-         used memory:  {}\n\
+         used memory:  {} ({})\n\
          total swap:   {}\n\
          used swap:    {}\n",
-        b_to_gb(sys.total_memory()),
-        b_to_gb(sys.used_memory()),
+        b_to_gb(total_memory),
+        b_to_gb(used_memory),
+        count_percent(total_memory, used_memory),
         b_to_gb(sys.total_swap()),
         b_to_gb(sys.used_swap()),
     )
