@@ -153,13 +153,18 @@ fn report_ram(sys: &mut System) -> String {
 fn report_disks() -> String {
     let mut report: String = format!("\nDISKS:\n");
     let disks: Disks = Disks::new_with_refreshed_list();
+
     for disk in &disks {
+        let total_space: u64 = disk.total_space();
+        let used_space: u64 = total_space - disk.available_space();
+
         report += &format!(
-            "{}: {:?} - total: {}, free: {}, removable: {}, file sys: {:?}, mounted: {:?}\n",
+            "{}: {:?} - total: {}, used: {} ({})\n\t  - removable: {}, file sys: {:?}, on: {:?}\n",
             disk.kind(),
             disk.name(),
-            b_to_gb(disk.total_space()),
-            b_to_gb(disk.available_space()),
+            b_to_gb(total_space),
+            b_to_gb(used_space),
+            count_percent(total_space, used_space),
             disk.is_removable(),
             disk.file_system(),
             disk.mount_point(),
