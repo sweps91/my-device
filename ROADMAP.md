@@ -5,7 +5,6 @@
 - clippy warnings
 - add tests
 
-- add pct of used RAM and pct of free disk
 - create readme
 - add LICENSE
 - handle runtime error, when binary runs on incompatible device
