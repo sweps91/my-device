@@ -1,8 +1,11 @@
 use std::env;
 use std::thread;
+use std::time::Duration;
 use sysinfo::{
     Components, Disks, MINIMUM_CPU_UPDATE_INTERVAL, Networks, ProcessesToUpdate, System,
 };
+
+const MINIMUM_NETWORK_UPDATE_INTERVAL: Duration = Duration::from_secs(1);
 
 /// Create string with device monitoring data.
 ///
@@ -16,6 +19,8 @@ pub fn create_report(day: &String, time: &String, timezone: &String) -> (String,
     // Update all information
     sys.refresh_all();
     sys.refresh_processes(ProcessesToUpdate::All, true);
+
+    let mut networks = Networks::new_with_refreshed_list();
 
     // Create report mut variable for final reporting
     let host_name: String = extract_string("host_name", || System::host_name());
@@ -40,7 +45,7 @@ pub fn create_report(day: &String, time: &String, timezone: &String) -> (String,
     report += &report_disks();
 
     // NETWORK
-    report += &report_network();
+    report += &report_network(&mut networks);
 
     // PROCESSES
     report += &format!(
@@ -179,10 +184,12 @@ fn report_disks() -> String {
 }
 
 /// Get data about connected network.
-fn report_network() -> String {
+fn report_network(networks: &mut Networks) -> String {
+    thread::sleep(MINIMUM_NETWORK_UPDATE_INTERVAL);
+    networks.refresh(true);
+
     let mut report = format!("\nNETWORK:\n");
-    let networks = Networks::new_with_refreshed_list();
-    for (name, data) in &networks {
+    for (name, data) in networks.iter() {
         report += &format!(
             "{}: downloading: {} KB, uploading: {} KB\n",
             name,
