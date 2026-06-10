@@ -1,7 +1,7 @@
 // #![warn(missing_docs)]
 
 pub mod report;
-pub mod save;
+mod save;
 use chrono::Local;
 
 const PRINT_REPORT: bool = true;
