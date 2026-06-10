@@ -1,3 +1,4 @@
+use std::env;
 use std::thread;
 use sysinfo::{
     Components, Disks, MINIMUM_CPU_UPDATE_INTERVAL, Networks, ProcessesToUpdate, System,
@@ -95,12 +96,13 @@ where
 fn report_system() -> String {
     format!(
         "\nSYSTEM:\n\
-         name:              {}\n\
+         name:              {} (arch: {})\n\
          os version:        {}\n\
          os long version:   {}\n\
          kernel version:    {}\n\
          uptime (hours):    {}\n",
         extract_string("name", || System::name()),
+        env::consts::ARCH,
         extract_string("os_version", || System::os_version()),
         extract_string("os_long_version", || System::long_os_version()),
         extract_string("kernel_version", || System::kernel_version()),
