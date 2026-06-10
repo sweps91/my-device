@@ -7,9 +7,9 @@ use sysinfo::{
 ///
 /// # Examples
 /// ```rust
-/// my_device::report::create_report(&"2026-06-01".to_string(), &"11h-11m-11s".to_string());
+/// my_device::report::create_report(&"2026-06-01".to_string(), &"11h-11m-11s".to_string(), &"+2:00".to_string());
 /// ```
-pub fn create_report(day: &String, time: &String) -> (String, String) {
+pub fn create_report(day: &String, time: &String, timezone: &String) -> (String, String) {
     let mut sys: System = System::new_all();
 
     // Update all information
@@ -18,7 +18,10 @@ pub fn create_report(day: &String, time: &String) -> (String, String) {
 
     // Create report mut variable for final reporting
     let host_name: String = extract_string("host_name", || System::host_name());
-    let mut report: String = format!("MY DEVICE: {}\nday: {}\ntime: {}\n", host_name, day, time);
+    let mut report: String = format!(
+        "MY DEVICE: {}\nday: {}\ntime: {}\ntimezone: {}\n",
+        host_name, day, time, timezone
+    );
 
     // SYSTEM
     report += &report_system();

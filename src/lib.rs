@@ -14,10 +14,12 @@ const SAVE_REPORT: bool = true;
 /// my_device::run();
 /// ```
 pub fn run() {
-    let day: String = format!("{}", Local::now().format("%Y-%m-%d"));
-    let time: String = format!("{}", Local::now().format("%Hh-%Mm-%Ss"));
+    let now = Local::now();
+    let day: String = format!("{}", now.format("%Y-%m-%d"));
+    let time: String = format!("{}", now.format("%Hh-%Mm-%Ss"));
+    let timezone: String = format!("UTC {}", now.format("%:z"));
 
-    let (host_name, rep) = report::create_report(&day, &time);
+    let (host_name, rep) = report::create_report(&day, &time, &timezone);
 
     if PRINT_REPORT {
         println!("{}", rep)
