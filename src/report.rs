@@ -1,11 +1,9 @@
 use std::env;
 use std::thread;
 use std::time::Duration;
-use sysinfo::{
-    Components, Disks, MINIMUM_CPU_UPDATE_INTERVAL, Networks, ProcessesToUpdate, System,
-};
+use sysinfo::{Components, Disks, Networks, ProcessesToUpdate, System};
 
-const MINIMUM_NETWORK_UPDATE_INTERVAL: Duration = Duration::from_secs(1);
+const MINIMUM_CPU_AND_NETWORK_UPDATE_INTERVAL: Duration = Duration::from_secs(1);
 
 /// Create string with device monitoring data.
 ///
@@ -19,8 +17,10 @@ pub fn create_report(day: &String, time: &String, timezone: &String) -> (String,
     // Update all information
     sys.refresh_all();
     sys.refresh_processes(ProcessesToUpdate::All, true);
-
     let mut networks = Networks::new_with_refreshed_list();
+
+    // sleep for required  cpu and network refreshes for time delta comparison
+    thread::sleep(MINIMUM_CPU_AND_NETWORK_UPDATE_INTERVAL);
 
     // Create report mut variable for final reporting
     let host_name: String = extract_string("host_name", || System::host_name());
@@ -33,7 +33,6 @@ pub fn create_report(day: &String, time: &String, timezone: &String) -> (String,
     report += &report_system();
 
     // CPU (with required refreshes for time delta comparison)
-    thread::sleep(MINIMUM_CPU_UPDATE_INTERVAL);
     sys.refresh_cpu_all();
     sys.refresh_processes(ProcessesToUpdate::All, true);
     report += &report_cpu(&mut sys);
@@ -185,7 +184,6 @@ fn report_disks() -> String {
 
 /// Get data about connected network.
 fn report_network(networks: &mut Networks) -> String {
-    thread::sleep(MINIMUM_NETWORK_UPDATE_INTERVAL);
     networks.refresh(true);
 
     let mut report = format!("\nNETWORK:\n");
@@ -221,7 +219,7 @@ fn report_top_cpu_processes(sys: &mut System, top_num: usize) -> String {
             .unwrap_or(std::cmp::Ordering::Equal)
     });
     for p in processes.iter().take(top_num) {
-        report += &format!("{:?}: {:.2}%\n", p.name(), p.cpu_usage());
+        report += &format!("{:?}: {:.1}%\n", p.name(), p.cpu_usage());
     }
     report
 }
