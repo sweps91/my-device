@@ -189,10 +189,10 @@ fn report_network(networks: &mut Networks) -> String {
     let mut report = format!("\nNETWORK:\n");
     for (name, data) in networks.iter() {
         report += &format!(
-            "{}: downloading: {} KB, uploading: {} KB\n",
+            "{}: downloading: {:.3} KB, uploading: {:.3} KB\n",
             name,
-            data.received() / 1024,
-            data.transmitted() / 1024
+            data.received() as f64 / 1024.0,
+            data.transmitted() as f64 / 1024.0,
         );
     }
     report
