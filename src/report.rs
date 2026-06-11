@@ -19,8 +19,10 @@ pub fn create_report(day: &String, time: &String, timezone: &String) -> (String,
     sys.refresh_processes(ProcessesToUpdate::All, true);
     let mut networks = Networks::new_with_refreshed_list();
 
-    // sleep for required  cpu and network refreshes for time delta comparison
+    // sleep & refreshes required for cpu and network metrics
     thread::sleep(MINIMUM_CPU_AND_NETWORK_UPDATE_INTERVAL);
+    sys.refresh_cpu_all();
+    sys.refresh_processes(ProcessesToUpdate::All, true);
 
     // Create report mut variable for final reporting
     let host_name: String = extract_string("host_name", || System::host_name());
@@ -32,9 +34,7 @@ pub fn create_report(day: &String, time: &String, timezone: &String) -> (String,
     // SYSTEM
     report += &report_system();
 
-    // CPU (with required refreshes for time delta comparison)
-    sys.refresh_cpu_all();
-    sys.refresh_processes(ProcessesToUpdate::All, true);
+    // CPU
     report += &report_cpu(&mut sys);
 
     // RAM
