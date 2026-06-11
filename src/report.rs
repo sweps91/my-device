@@ -5,6 +5,9 @@ use sysinfo::{Components, Disks, Networks, ProcessesToUpdate, System};
 
 const MINIMUM_CPU_AND_NETWORK_UPDATE_INTERVAL: Duration = Duration::from_secs(1);
 
+const TOP_RAM_PROCESSES: usize = 25; // number of listed ram consuming processes
+const TOP_CPU_PROCESSES: usize = 15; // number of listed cpu consuming processes
+
 /// Create string with device monitoring data.
 ///
 /// # Examples
@@ -53,10 +56,10 @@ pub fn create_report(day: &String, time: &String, timezone: &String) -> (String,
     );
 
     // TOP RAM PROCESSES
-    report += &report_top_ram_processes(&mut sys, 20);
+    report += &report_top_ram_processes(&mut sys, TOP_RAM_PROCESSES);
 
     // TOP CPU PROCESSES
-    report += &report_top_cpu_processes(&mut sys, 10);
+    report += &report_top_cpu_processes(&mut sys, TOP_CPU_PROCESSES);
 
     // COMPONENTS
     report += &report_components();
