@@ -1,7 +1,29 @@
 [package]
 name = "my-device"
-license = "MIT"
 version = "0.1.0"
+description = "Get information about device os, cpu, ram, disks, networks & consuming processes"
+repository = "https://github.com/sweps91/my-device"
+license = "MIT"
+rust-version = "1.96"
+keywords = [
+    "rust",
+    "device",
+    "cpu",
+    "monitor",
+    "monitoring",
+    "ram",
+    "disk",
+    "hardware",
+    "network",
+    "os",
+    "processes",
+    "rust-lang",
+    "rust-library",
+    "cpu-monitoring",
+    "disk-usage",
+    "monitoring-tool",
+    "hardware-monitoring",
+]
 edition = "2024"
 
 [dependencies]

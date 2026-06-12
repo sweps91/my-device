@@ -4,9 +4,7 @@
 
 - clippy warnings
 - add tests
-
 - create readme
-- add LICENSE
 
 - input parameters - add enumerate/types
 - input parameters - add validation?
