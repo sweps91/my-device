@@ -73,7 +73,7 @@ fn b_to_gb(bytes: u64) -> String {
 }
 
 fn count_percent(full_number: u64, count_number: u64) -> String {
-    format!("{} %", count_number / (full_number / 100))
+    format!("{} %", count_number as f32 / (full_number as f32 / 100.0))
 }
 
 /// Get cpu usage.
@@ -246,7 +246,19 @@ mod tests {
 
     #[test]
     fn test_b_to_gb() {
-        let result = b_to_gb(16_782_584_709);
+        let result: String = b_to_gb(16_782_584_709);
         assert_eq!(result, "15.63 GB");
+    }
+
+    #[test]
+    fn test_count_percent() {
+        let result: String = count_percent(20, 10);
+        assert_eq!(result, "50 %")
+    }
+
+    #[test]
+    fn test_cpu_usage() {
+        let mut sys: System = System::new_all();
+        assert!(cpu_usage(&mut sys).contains("cpu usage"));
     }
 }
