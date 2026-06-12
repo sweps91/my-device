@@ -73,7 +73,10 @@ fn b_to_gb(bytes: u64) -> String {
 }
 
 fn count_percent(full_number: u64, count_number: u64) -> String {
-    format!("{} %", count_number as f32 / (full_number as f32 / 100.0))
+    format!(
+        "{:.0} %",
+        count_number as f32 / (full_number as f32 / 100.0)
+    )
 }
 
 /// Get cpu usage.
