@@ -1,15 +1,14 @@
 # ROADMAP
 
 ## ASAP
-- use logging or prints?
 
-- add date to changelog
-- public repo !
-
-- clippy warnings
+- solve clippy warnings
 - extend tests
-- input parameters - add validation?
+- add logging -> use log::{info, debug, trace}
+- input parameters -> add validation?
 
 ## REFACTOR
+- nothing to refactor
 
 ## OPTIMIZATION
+- nothing to optimization
