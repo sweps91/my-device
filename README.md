@@ -113,6 +113,7 @@ Computer temperature: 46.850006°C (max: 46.850006°C / critical: 98.850006°C)
 Note: for components temperature can be required to run program as administrator (Windows) 
 
 ### Result saved
-In the repository root is created folder named `my-device-report` where is stored `txt` file per each program run (if run program after binary build, folder with reports is created in the same directory where you run program from)
+- Reports Folder: A folder named `my-device-report` is created in your current working directory.
+- File Generation: A new `.txt` file is generated inside this folder for each individual run.
 
 🦀🦀🦀

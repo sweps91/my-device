@@ -1,8 +1,6 @@
 # ROADMAP
 
 ## ASAP
-
-- create readme
 - use logging or prints?
 
 - add date to changelog
