@@ -81,10 +81,7 @@ fn count_percent(full_number: u64, count_number: u64) -> String {
 
 /// Get cpu usage.
 fn cpu_usage(sys: &mut System) -> String {
-    let cpu_usage = format!(
-        "cpu usage: {:.1}% (bellow per unit)",
-        sys.global_cpu_usage()
-    );
+    let cpu_usage = format!("cpu usage: {:.1}% (below per unit)", sys.global_cpu_usage());
 
     let mut cpu_unit_usage: String = String::new();
     for (i, cpu) in sys.cpus().iter().enumerate() {
