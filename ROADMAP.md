@@ -4,7 +4,7 @@
 
 - solve clippy warnings
 - extend tests
-- add logging -> use log::{info, debug, trace}
+- add logging -> report.rs, save.rs
 - input parameters -> add validation?
 
 ## REFACTOR

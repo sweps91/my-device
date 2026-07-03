@@ -17,7 +17,6 @@ const TOP_CPU_PROCESSES: u8 = 15; // number of listed cpu consuming processes
 /// ```
 pub fn create_report(day: &String, time: &String, timezone: &String) -> (String, String) {
     let mut sys: System = System::new_all();
-    debug!("{:?}", sys);
 
     // Update all information
     sys.refresh_all();
