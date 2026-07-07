@@ -1,9 +1,15 @@
+use log::{info, trace};
 use std::fs;
 
 /// Save provided string to txt file.
 pub(crate) fn save_report(folder: String, filename: String, report: String) {
+    let target: String = format!("{}/{}.txt", folder, filename);
+
     fs::create_dir_all(&folder).expect("Failed to create dir");
-    fs::write(format!("{}/{}.txt", folder, filename), report).expect("Failed to write file");
+    trace!("{} created or already existed", folder);
+
+    fs::write(&target, report).expect("Failed to write file");
+    info!("report saved to: {}", target);
 }
 
 // TESTS:
