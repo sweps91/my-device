@@ -1,6 +1,5 @@
 // #![warn(missing_docs)]
 
-use env_logger;
 use log::{debug, info};
 pub mod report;
 mod save;
@@ -16,9 +15,7 @@ const SAVE_REPORT: bool = true;
 /// my_device::run();
 /// ```
 pub fn run() {
-    env_logger::init();
-
-    info!("fn run starts ...");
+    info!("starting device report ...");
 
     let now = Local::now();
     debug!("now: {}", now);
@@ -31,21 +28,22 @@ pub fn run() {
 
     let (host_name, rep) = report::create_report(&day, &time, &timezone);
 
-    info!("PRINT_REPORT: {}", PRINT_REPORT);
+    debug!("PRINT_REPORT: {}", PRINT_REPORT);
     if PRINT_REPORT {
         println!("{}", rep);
         info!("report printed");
     }
 
-    info!("SAVE_REPORT: {}", SAVE_REPORT);
+    debug!("SAVE_REPORT: {}", SAVE_REPORT);
     if SAVE_REPORT {
         save::save_report(
             "my-device-report".to_string(),
             format!("{}-{}-{}", host_name, day, time),
             rep,
         );
+        // TODO logging according Result<>
         info!("report saved");
     }
 
-    info!("fn run done");
+    info!("device report done");
 }
