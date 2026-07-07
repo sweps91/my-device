@@ -1,7 +1,7 @@
 // #![warn(missing_docs)]
 
 use env_logger;
-use log::{debug, info, trace};
+use log::{debug, info};
 pub mod report;
 mod save;
 use chrono::Local;

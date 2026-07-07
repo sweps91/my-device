@@ -4,7 +4,6 @@
 
 - solve clippy warnings
 - extend tests
-- add logging -> report.rs, save.rs
 - input parameters -> add validation?
 
 ## REFACTOR

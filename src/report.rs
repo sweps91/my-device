@@ -1,4 +1,4 @@
-use log::{debug, info, trace};
+use log::{debug, trace};
 use std::env;
 use std::thread;
 use std::time::Duration;
@@ -13,23 +13,37 @@ const TOP_CPU_PROCESSES: u8 = 15; // number of listed cpu consuming processes
 ///
 /// # Examples
 /// ```rust
-/// my_device::report::create_report(&"2026-06-01".to_string(), &"11h-11m-11s".to_string(), &"+2:00".to_string());
+/// my_device::report::create_report(&"2026-06-01", &"11h-11m-11s", &"+2:00");
 /// ```
-pub fn create_report(day: &String, time: &String, timezone: &String) -> (String, String) {
+pub fn create_report(day: &str, time: &str, timezone: &str) -> (String, String) {
     let mut sys: System = System::new_all();
+    trace!("Initializing system metrics: {:?}", sys);
 
     // Update all information
     sys.refresh_all();
+    trace!("sys.refresh_all done");
+
     sys.refresh_processes(ProcessesToUpdate::All, true);
+    trace!("sys.refresh_processes done");
+
+    // Get networks
     let mut networks = Networks::new_with_refreshed_list();
+    debug!("networks: {:?}", networks);
 
     // sleep & refreshes required for cpu and network metrics
+    debug!(
+        "MINIMUM_CPU_AND_NETWORK_UPDATE_INTERVAL: {:?}",
+        MINIMUM_CPU_AND_NETWORK_UPDATE_INTERVAL
+    );
     thread::sleep(MINIMUM_CPU_AND_NETWORK_UPDATE_INTERVAL);
     sys.refresh_cpu_all();
+    trace!("sys.refresh_cpu_all done");
     sys.refresh_processes(ProcessesToUpdate::All, true);
+    trace!("sys.refresh_processes done");
 
     // Create report mut variable for final reporting
     let host_name: String = extract_string("host_name", || System::host_name());
+    debug!("host_name: {}", host_name);
     let mut report: String = format!(
         "MY DEVICE: {}\nday: {}\ntime: {}\ntimezone: {}\n",
         host_name, day, time, timezone
@@ -37,18 +51,23 @@ pub fn create_report(day: &String, time: &String, timezone: &String) -> (String,
 
     // SYSTEM
     report += &report_system();
+    trace!("System section appended");
 
     // CPU
     report += &report_cpu(&mut sys);
+    trace!("CPU section appended");
 
     // RAM
     report += &report_ram(&mut sys);
+    trace!("RAM section appended");
 
     // DISKS
     report += &report_disks();
+    trace!("Disks section appended");
 
     // NETWORK
     report += &report_network(&mut networks);
+    trace!("Network section appended");
 
     // PROCESSES
     report += &format!(
@@ -57,13 +76,20 @@ pub fn create_report(day: &String, time: &String, timezone: &String) -> (String,
     );
 
     // TOP RAM PROCESSES
+    debug!("TOP_RAM_PROCESSES: {}", TOP_RAM_PROCESSES);
     report += &report_top_ram_processes(&mut sys, TOP_RAM_PROCESSES as usize);
+    trace!("RAM Processes section appended");
 
     // TOP CPU PROCESSES
+    debug!("TOP_CPU_PROCESSES: {}", TOP_CPU_PROCESSES);
     report += &report_top_cpu_processes(&mut sys, TOP_CPU_PROCESSES as usize);
+    trace!("CPU Processes section appended");
 
     // COMPONENTS
     report += &report_components();
+    trace!("Components section appended");
+
+    debug!("report done for: {}", host_name);
 
     (host_name, report)
 }
