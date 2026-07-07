@@ -41,7 +41,6 @@ pub fn run() {
             format!("{}-{}-{}", host_name, day, time),
             rep,
         );
-        // TODO logging according Result<>
         info!("report saved");
     }
 

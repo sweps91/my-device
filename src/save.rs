@@ -9,6 +9,8 @@ pub(crate) fn save_report(folder: String, filename: String, report: String) {
     trace!("{} created or already existed", folder);
 
     fs::write(&target, report).expect("Failed to write file");
+    // TODO logging according Result<>
+
     info!("report saved to: {}", target);
 }
 
