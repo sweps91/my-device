@@ -36,13 +36,16 @@ pub fn run() {
 
     debug!("SAVE_REPORT: {}", SAVE_REPORT);
     if SAVE_REPORT {
-        save::save_report(
+        if let Err(e) = save::save_report(
             "my-device-report",
-            &format!("{}-{}-{}", host_name, day, time),
+            &format!("{host_name}-{day}-{time}"),
             &rep,
-        );
-        info!("report saved");
-    }
+        ) {
+            log::error!("saving report failed: {e}");
+        } else {
+            info!("report successfully saved");
+        }
+    };
 
     info!("device report done");
 }
