@@ -54,11 +54,11 @@ pub fn create_report(day: &str, time: &str, timezone: &str) -> (String, String) 
     trace!("System section appended");
 
     // CPU
-    report += &report_cpu(&mut sys);
+    report += &report_cpu(&sys);
     trace!("CPU section appended");
 
     // RAM
-    report += &report_ram(&mut sys);
+    report += &report_ram(&sys);
     trace!("RAM section appended");
 
     // DISKS
@@ -77,12 +77,12 @@ pub fn create_report(day: &str, time: &str, timezone: &str) -> (String, String) 
 
     // TOP RAM PROCESSES
     debug!("TOP_RAM_PROCESSES: {}", TOP_RAM_PROCESSES);
-    report += &report_top_ram_processes(&mut sys, TOP_RAM_PROCESSES as usize);
+    report += &report_top_ram_processes(&sys, TOP_RAM_PROCESSES as usize);
     trace!("RAM Processes section appended");
 
     // TOP CPU PROCESSES
     debug!("TOP_CPU_PROCESSES: {}", TOP_CPU_PROCESSES);
-    report += &report_top_cpu_processes(&mut sys, TOP_CPU_PROCESSES as usize);
+    report += &report_top_cpu_processes(&sys, TOP_CPU_PROCESSES as usize);
     trace!("CPU Processes section appended");
 
     // COMPONENTS
@@ -107,7 +107,7 @@ fn count_percent(full_number: u64, count_number: u64) -> String {
 }
 
 /// Get cpu usage.
-fn cpu_usage(sys: &mut System) -> String {
+fn cpu_usage(sys: &System) -> String {
     let cpu_usage = format!("cpu usage: {:.1}% (below per unit)", sys.global_cpu_usage());
 
     let mut cpu_unit_usage: String = String::new();
@@ -145,7 +145,7 @@ fn report_system() -> String {
 }
 
 /// Get CPU monitoring data.
-fn report_cpu(sys: &mut System) -> String {
+fn report_cpu(sys: &System) -> String {
     let cpu_info = if let Some(cpu) = sys.cpus().first() {
         format!(
             "brand:          {}\n\
@@ -170,7 +170,7 @@ fn report_cpu(sys: &mut System) -> String {
 }
 
 /// Get RAM monitoring data.
-fn report_ram(sys: &mut System) -> String {
+fn report_ram(sys: &System) -> String {
     let total_memory: u64 = sys.total_memory();
     let used_memory: u64 = sys.used_memory();
 
@@ -229,7 +229,7 @@ fn report_network(networks: &mut Networks) -> String {
 }
 
 /// Get top RAM consuming processes.
-fn report_top_ram_processes(sys: &mut System, top_num: usize) -> String {
+fn report_top_ram_processes(sys: &System, top_num: usize) -> String {
     let mut report = format!("\nTOP {} RAM PROCESSES:\n", top_num);
     let mut processes: Vec<_> = sys.processes().values().collect();
     processes.sort_by_key(|b| std::cmp::Reverse(b.memory()));
@@ -240,7 +240,7 @@ fn report_top_ram_processes(sys: &mut System, top_num: usize) -> String {
 }
 
 /// Get top CPU consuming processes.
-fn report_top_cpu_processes(sys: &mut System, top_num: usize) -> String {
+fn report_top_cpu_processes(sys: &System, top_num: usize) -> String {
     let mut report = format!("\nTOP {} CPU PROCESSES:\n", top_num);
     let mut processes: Vec<_> = sys.processes().values().collect();
     processes.sort_by(|a, b| {

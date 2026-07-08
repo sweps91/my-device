@@ -11,6 +11,9 @@ Types of changes: Added, Changed, Deprecated, Removed, Fixed, Security.
 - pub(crate) fn save_report returns std::io::Result<()>; save.rs
 - pub fn run() can logging error after failed report saving; lib.rs
 
+### Removed
+- unused argument mutation from partial report functions; report.rs
+
 ## [0.1.1] - 2026-07-07
 
 ### Added
