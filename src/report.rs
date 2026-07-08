@@ -95,8 +95,8 @@ pub fn create_report(day: &str, time: &str, timezone: &str) -> (String, String) 
 }
 
 /// Transfer number from bytes and return as string in gigabytes.
-fn b_to_gb(bytes: u64) -> String {
-    format!("{:.2} GB", bytes as f64 / 1024.0 / 1024.0 / 1024.0) // or num / 1_073_741_824
+fn b_to_gib(bytes: u64) -> String {
+    format!("{:.2} GiB", bytes as f64 / 1024.0 / 1024.0 / 1024.0) // or num / 1_073_741_824
 }
 
 fn count_percent(full_number: u64, count_number: u64) -> String {
@@ -180,11 +180,11 @@ fn report_ram(sys: &System) -> String {
          used memory:  {} ({})\n\
          total swap:   {}\n\
          used swap:    {}\n",
-        b_to_gb(total_memory),
-        b_to_gb(used_memory),
+        b_to_gib(total_memory),
+        b_to_gib(used_memory),
         count_percent(total_memory, used_memory),
-        b_to_gb(sys.total_swap()),
-        b_to_gb(sys.used_swap()),
+        b_to_gib(sys.total_swap()),
+        b_to_gib(sys.used_swap()),
     )
 }
 
@@ -201,8 +201,8 @@ fn report_disks() -> String {
             "{}: {:?} - total: {}, used: {} ({})\n\t  - removable: {}, file sys: {:?}, on: {:?}\n",
             disk.kind(),
             disk.name(),
-            b_to_gb(total_space),
-            b_to_gb(used_space),
+            b_to_gib(total_space),
+            b_to_gib(used_space),
             count_percent(total_space, used_space),
             disk.is_removable(),
             disk.file_system(),
@@ -273,7 +273,7 @@ mod tests {
 
     #[test]
     fn test_b_to_gb() {
-        let result: String = b_to_gb(16_782_584_709);
+        let result: String = b_to_gib(16_782_584_709);
         assert_eq!(result, "15.63 GB");
     }
 
