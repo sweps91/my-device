@@ -37,9 +37,9 @@ pub fn run() {
     debug!("SAVE_REPORT: {}", SAVE_REPORT);
     if SAVE_REPORT {
         save::save_report(
-            "my-device-report".to_string(),
-            format!("{}-{}-{}", host_name, day, time),
-            rep,
+            "my-device-report",
+            &format!("{}-{}-{}", host_name, day, time),
+            &rep,
         );
         info!("report saved");
     }

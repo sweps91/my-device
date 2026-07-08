@@ -1,21 +1,21 @@
 use log::{info, trace};
 use std::fs;
+use std::path::Path;
 
 /// Save provided string to txt file.
-pub(crate) fn save_report(folder: String, filename: String, report: String) {
-    let target: String = format!("{}/{}.txt", folder, filename);
+pub(crate) fn save_report(folder: &str, filename: &str, report: &str) -> std::io::Result<()> {
+    let target = Path::new(folder).join(format!("{filename}.txt"));
 
-    fs::create_dir_all(&folder).expect("Failed to create dir");
+    fs::create_dir_all(folder)?;
     trace!("{} created or already existed", folder);
 
-    fs::write(&target, report).expect("Failed to write file");
-    // TODO logging according Result<>
+    fs::write(&target, report)?;
+    info!("report saved to: {}", target.display());
 
-    info!("report saved to: {}", target);
+    Ok(())
 }
 
 // TESTS:
-// TODO assert results
 
 #[cfg(test)]
 mod tests {
@@ -23,10 +23,6 @@ mod tests {
 
     #[test]
     fn test_save_report() {
-        save_report(
-            "my-device-report".to_string(),
-            "test".to_string(),
-            "testing report".to_string(),
-        )
+        assert!(save_report("my-device-report", "test", "testing report").is_ok());
     }
 }
