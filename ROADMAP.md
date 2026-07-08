@@ -2,7 +2,6 @@
 
 ## ASAP
 
-- solve clippy warnings
 - extend tests
 - input parameters -> add validation?
 

@@ -11,6 +11,8 @@ const TOP_CPU_PROCESSES: u8 = 15; // number of listed cpu consuming processes
 
 /// Create string with device monitoring data.
 ///
+/// Function also uses 1 second sleep.
+///
 /// # Examples
 /// ```rust
 /// my_device::report::create_report("2026-06-01", "11h-11m-11s", "+2:00");
@@ -23,8 +25,8 @@ pub fn create_report(day: &str, time: &str, timezone: &str) -> (String, String) 
     sys.refresh_all();
     trace!("sys.refresh_all done");
 
-    sys.refresh_processes(ProcessesToUpdate::All, true);
-    trace!("sys.refresh_processes done");
+    // sys.refresh_processes(ProcessesToUpdate::All, true);
+    // trace!("sys.refresh_processes done");
 
     // Get networks
     let mut networks = Networks::new_with_refreshed_list();
@@ -42,7 +44,7 @@ pub fn create_report(day: &str, time: &str, timezone: &str) -> (String, String) 
     trace!("sys.refresh_processes done");
 
     // Create report mut variable for final reporting
-    let host_name: String = extract_string("host_name", || System::host_name());
+    let host_name: String = extract_string("host_name", System::host_name);
     debug!("host_name: {}", host_name);
     let mut report: String = format!(
         "MY DEVICE: {}\nday: {}\ntime: {}\ntimezone: {}\n",
@@ -95,8 +97,8 @@ pub fn create_report(day: &str, time: &str, timezone: &str) -> (String, String) 
 }
 
 /// Transfer number from bytes and return as string in gigabytes.
-fn b_to_gib(bytes: u64) -> String {
-    format!("{:.2} GiB", bytes as f64 / 1024.0 / 1024.0 / 1024.0) // or num / 1_073_741_824
+fn b_to_gb(bytes: u64) -> String {
+    format!("{:.2} GB", bytes as f64 / 1024.0 / 1024.0 / 1024.0)
 }
 
 fn count_percent(full_number: u64, count_number: u64) -> String {
@@ -135,11 +137,11 @@ fn report_system() -> String {
          os long version:   {}\n\
          kernel version:    {}\n\
          uptime (hours):    {}\n",
-        extract_string("name", || System::name()),
+        extract_string("name", System::name),
         env::consts::ARCH,
-        extract_string("os_version", || System::os_version()),
-        extract_string("os_long_version", || System::long_os_version()),
-        extract_string("kernel_version", || System::kernel_version()),
+        extract_string("os_version", System::os_version),
+        extract_string("os_long_version", System::long_os_version),
+        extract_string("kernel_version", System::kernel_version),
         System::uptime() / 3_600,
     )
 }
@@ -180,17 +182,17 @@ fn report_ram(sys: &System) -> String {
          used memory:  {} ({})\n\
          total swap:   {}\n\
          used swap:    {}\n",
-        b_to_gib(total_memory),
-        b_to_gib(used_memory),
+        b_to_gb(total_memory),
+        b_to_gb(used_memory),
         count_percent(total_memory, used_memory),
-        b_to_gib(sys.total_swap()),
-        b_to_gib(sys.used_swap()),
+        b_to_gb(sys.total_swap()),
+        b_to_gb(sys.used_swap()),
     )
 }
 
 /// Get data about device disks.
 fn report_disks() -> String {
-    let mut report: String = format!("\nDISKS:\n");
+    let mut report: String = "\nDISKS:\n".to_string();
     let disks: Disks = Disks::new_with_refreshed_list();
 
     for disk in &disks {
@@ -201,8 +203,8 @@ fn report_disks() -> String {
             "{}: {:?} - total: {}, used: {} ({})\n\t  - removable: {}, file sys: {:?}, on: {:?}\n",
             disk.kind(),
             disk.name(),
-            b_to_gib(total_space),
-            b_to_gib(used_space),
+            b_to_gb(total_space),
+            b_to_gb(used_space),
             count_percent(total_space, used_space),
             disk.is_removable(),
             disk.file_system(),
@@ -216,7 +218,7 @@ fn report_disks() -> String {
 fn report_network(networks: &mut Networks) -> String {
     networks.refresh(true);
 
-    let mut report = format!("\nNETWORK:\n");
+    let mut report = "\nNETWORK:\n".to_string();
     for (name, data) in networks.iter() {
         report += &format!(
             "{}: downloading: {:.3} KB, uploading: {:.3} KB\n",
@@ -258,9 +260,9 @@ fn report_top_cpu_processes(sys: &System, top_num: usize) -> String {
 fn report_components() -> String {
     let components = Components::new_with_refreshed_list();
 
-    let mut report = format!("\nCOMPONENTS:\n(need permission: run as administrator)\n");
+    let mut report = "\nCOMPONENTS:\n(need permission: run as administrator)\n".to_string();
     for component in &components {
-        report += &format!("{component:?}");
+        report += &format!("{component:?}\n");
     }
     report
 }
@@ -273,7 +275,7 @@ mod tests {
 
     #[test]
     fn test_b_to_gb() {
-        let result: String = b_to_gib(16_782_584_709);
+        let result: String = b_to_gb(16_782_584_709);
         assert_eq!(result, "15.63 GB");
     }
 

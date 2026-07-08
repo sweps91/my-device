@@ -13,10 +13,12 @@ Types of changes: Added, Changed, Deprecated, Removed, Fixed, Security.
 
 - report.rs:
     - fn b_to_gb & fn count_percent f32 to f64
-    - fn b_to_gb renamed to fn b_to_gib
 
 ### Removed
 - unused argument mutation from partial report functions; report.rs
+
+### Fixed
+- solved clippy warning
 
 ## [0.1.1] - 2026-07-07
 
