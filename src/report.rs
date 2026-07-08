@@ -13,7 +13,7 @@ const TOP_CPU_PROCESSES: u8 = 15; // number of listed cpu consuming processes
 ///
 /// # Examples
 /// ```rust
-/// my_device::report::create_report(&"2026-06-01", &"11h-11m-11s", &"+2:00");
+/// my_device::report::create_report("2026-06-01", "11h-11m-11s", "+2:00");
 /// ```
 pub fn create_report(day: &str, time: &str, timezone: &str) -> (String, String) {
     let mut sys: System = System::new_all();
@@ -96,13 +96,13 @@ pub fn create_report(day: &str, time: &str, timezone: &str) -> (String, String) 
 
 /// Transfer number from bytes and return as string in gigabytes.
 fn b_to_gb(bytes: u64) -> String {
-    format!("{:.2} GB", bytes as f32 / 1024.0 / 1024.0 / 1024.0) // or num / 1_073_741_824
+    format!("{:.2} GB", bytes as f64 / 1024.0 / 1024.0 / 1024.0) // or num / 1_073_741_824
 }
 
 fn count_percent(full_number: u64, count_number: u64) -> String {
     format!(
         "{:.0} %",
-        count_number as f32 / (full_number as f32 / 100.0)
+        count_number as f64 / (full_number as f64 / 100.0)
     )
 }
 

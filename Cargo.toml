@@ -1,6 +1,6 @@
 [package]
 name = "my-device"
-version = "0.1.1"
+version = "0.1.2"
 description = "Get information about device os, cpu, ram, disks, networks & consuming processes"
 repository = "https://github.com/sweps91/my-device"
 license = "MIT"
