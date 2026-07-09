@@ -102,6 +102,10 @@ fn b_to_gb(bytes: u64) -> String {
 }
 
 fn count_percent(full_number: u64, count_number: u64) -> String {
+    if full_number == 0 {
+        return "total is zero (cannot count percent)".to_string();
+    }
+
     format!(
         "{:.0} %",
         count_number as f64 / (full_number as f64 / 100.0)
@@ -283,6 +287,12 @@ mod tests {
     fn test_count_percent() {
         let result: String = count_percent(20, 10);
         assert_eq!(result, "50 %")
+    }
+
+    #[test]
+    fn test_count_percent_zero() {
+        let result: String = count_percent(0, 10);
+        assert_eq!(result, "total is zero (cannot count percent)")
     }
 
     #[test]

@@ -8,7 +8,10 @@ Types of changes: Added, Changed, Deprecated, Removed, Fixed, Security.
 ## [0.1.3] - 2026-07-09
 
 ### Fixed
-- counting of used_space uses saturating_sub method in fn report_disks; report.rs
+- report.rs:
+    - counting of used_space uses saturating_sub method in fn report_disks
+    - fn count_percent handles zero division (when full number is zero)
+        - also added tests: fn test_count_percent_zero
 
 ## [0.1.2] - 2026-07-08
 
