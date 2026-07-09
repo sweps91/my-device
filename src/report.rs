@@ -197,7 +197,7 @@ fn report_disks() -> String {
 
     for disk in &disks {
         let total_space: u64 = disk.total_space();
-        let used_space: u64 = total_space - disk.available_space();
+        let used_space: u64 = total_space.saturating_sub(disk.available_space());
 
         report += &format!(
             "{}: {:?} - total: {}, used: {} ({})\n\t  - removable: {}, file sys: {:?}, on: {:?}\n",
