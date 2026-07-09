@@ -25,9 +25,6 @@ pub fn create_report(day: &str, time: &str, timezone: &str) -> (String, String) 
     sys.refresh_all();
     trace!("sys.refresh_all done");
 
-    // sys.refresh_processes(ProcessesToUpdate::All, true);
-    // trace!("sys.refresh_processes done");
-
     // Get networks
     let mut networks = Networks::new_with_refreshed_list();
     debug!("networks: {:?}", networks);
@@ -297,7 +294,7 @@ mod tests {
 
     #[test]
     fn test_cpu_usage() {
-        let mut sys: System = System::new_all();
-        assert!(cpu_usage(&mut sys).contains("cpu usage"));
+        let sys: System = System::new_all();
+        assert!(cpu_usage(&sys).contains("cpu usage"));
     }
 }

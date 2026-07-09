@@ -7,6 +7,9 @@ Types of changes: Added, Changed, Deprecated, Removed, Fixed, Security.
 
 ## [0.1.3] - 2026-07-09
 
+### Changed
+- string formatting; lib.rs
+
 ### Fixed
 - report.rs:
     - counting of used_space uses saturating_sub method in fn report_disks

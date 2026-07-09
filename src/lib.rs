@@ -19,9 +19,9 @@ pub fn run() {
 
     let now = Local::now();
     debug!("now: {}", now);
-    let day: String = format!("{}", now.format("%Y-%m-%d"));
+    let day: String = now.format("%Y-%m-%d").to_string();
     debug!("day: {}", day);
-    let time: String = format!("{}", now.format("%Hh-%Mm-%Ss"));
+    let time: String = now.format("%Hh-%Mm-%Ss").to_string();
     debug!("time: {}", time);
     let timezone: String = format!("UTC {}", now.format("%:z"));
     debug!("timezone: {}", timezone);
@@ -45,7 +45,7 @@ pub fn run() {
         } else {
             info!("report successfully saved");
         }
-    };
+    }
 
     info!("device report done");
 }
